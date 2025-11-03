@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityFlow - Sign Up</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #000000 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Animated Background Particles */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.8) 0%, rgba(0, 200, 255, 0) 70%);
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+            opacity: 0.6;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            25% { transform: translate(50px, -50px) scale(1.2); opacity: 0.6; }
+            50% { transform: translate(-30px, 30px) scale(0.9); opacity: 0.4; }
+            75% { transform: translate(40px, 20px) scale(1.1); opacity: 0.5; }
+        }
+
+        .glow-effect {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .glow-1 {
+            background: #00ffff;
+            top: -200px;
+            left: -200px;
+            animation: glow-pulse 8s infinite ease-in-out;
+        }
+
+        .glow-2 {
+            background: #0080ff;
+            bottom: -200px;
+            right: -200px;
+            animation: glow-pulse 10s infinite ease-in-out reverse;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { opacity: 0.15; transform: scale(1); }
+            50% { opacity: 0.25; transform: scale(1.1); }
+        }
+
+        /* Header */
+        header {
+            position: relative;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: rgba(10, 14, 39, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #00ffff 0%, #0080ff 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #000;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            animation: logo-glow 3s infinite ease-in-out;
+        }
+
+        @keyframes logo-glow {
+            0%, 100% { box-shadow: 0 0 30px rgba(0, 255, 255, 0.5); }
+            50% { box-shadow: 0 0 50px rgba(0, 255, 255, 0.8), 0 0 80px rgba(0, 255, 255, 0.4); }
+        }
+
+        .company-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ffff 0%, #0080ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00ffff, #0080ff);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Signup Container */
+        .signup-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            padding: 3rem 5%;
+        }
+
+        .signup-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 30px;
+            padding: 3rem 3rem 2.5rem;
+            backdrop-filter: blur(20px);
+            max-width: 550px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 255, 255, 0.1);
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .signup-box:hover {
+            border-color: rgba(0, 255, 255, 0.5);
+            box-shadow: 0 20px 80px rgba(0, 255, 255, 0.2);
+        }
+
+        .signup-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #00ffff 0%, #ffffff 50%, #0080ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .signup-subtitle {
+            text-align: center;
+            color: #a0d8ff;
+            margin-bottom: 2.5rem;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            color: #00ffff;
+            margin-bottom: 0.6rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.3rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            border-radius: 15px;
+            color: #ffffff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-color: #00ffff;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-input::placeholder {
+            color: #6b9bb8;
+        }
+
+        .signup-button {
+            width: 100%;
+            padding: 1.1rem;
+            background: linear-gradient(135deg, #00ffff 0%, #0080ff 100%);
+            color: #000;
+            border: none;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .signup-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.6);
+        }
+
+        .divider {
+            text-align: center;
+            color: #6b9bb8;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: rgba(0, 255, 255, 0.2);
+        }
+
+        .divider::before {
+            left: 0;
+        }
+
+        .divider::after {
+            right: 0;
+        }
+
+        .login-link {
+            text-align: center;
+            color: #a0d8ff;
+            font-size: 0.95rem;
+        }
+
+        .login-link a {
+            color: #00ffff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .login-link a:hover {
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        /* Checkbox */
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #00ffff;
+            margin-top: 3px;
+        }
+
+        .checkbox-group label {
+            color: #a0d8ff;
+            font-size: 0.85rem;
+            cursor: pointer;
+            line-height: 1.5;
+        }
+
+        .checkbox-group label a {
+            color: #00ffff;
+            text-decoration: none;
+        }
+
+        .checkbox-group label a:hover {
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+
+            .signup-box {
+                padding: 2.5rem 2rem;
+            }
+
+            .signup-title {
+                font-size: 2rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Effects -->
+    <div class="glow-effect glow-1"></div>
+    <div class="glow-effect glow-2"></div>
+    
+    <div id="particles"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo-section">
+            <div class="logo">P</div>
+            <div class="company-name">ParkEase</div>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="parking location.html">Parking Locations</a>
+        </nav>
+    </header>
+    <!-- Signup Container -->
+    <div class="signup-container">
+        <div class="signup-box">
+            <h1 class="signup-title">Create Account</h1>
+            <p class="signup-subtitle">Join CityFlow and experience smart urban mobility</p>
+            
+            <form id="signupForm">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-input" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" class="form-input" placeholder="Enter your phone number" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" placeholder="Create password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" class="form-input" placeholder="Confirm password" required>
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">I agree to the <a href="#terms">Terms of Service</a> and <a href="#privacy">Privacy Policy</a></label>
+                </div>
+
+                <button type="submit" class="signup-button">Create Account</button>
+            </form>
+
+            <div class="divider">OR</div>
+
+            <div class="login-link">
+                Already have an account? <a href="login.html">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Base URL - automatically detects the correct URL
+        const API_BASE_URL = window.location.origin;
+        
+        // Create floating particles
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 50;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            const size = Math.random() * 4 + 2;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = (Math.random() * 15 + 15) + 's';
+            
+            particlesContainer.appendChild(particle);
+        }
+
+        // Form submission
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(this);
+            const full_name = this.querySelector('input[type="text"]').value;
+            const email = this.querySelector('input[type="email"]').value;
+            const phone = this.querySelector('input[type="tel"]').value;
+            const password = this.querySelector('input[type="password"]').value;
+            const confirmPassword = this.querySelectorAll('input[type="password"]')[1].value;
+            
+            // Check if passwords match
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            // Add loading effect
+            const button = this.querySelector('.signup-button');
+            button.textContent = 'Creating Account...';
+            button.style.opacity = '0.7';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/users/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        full_name,
+                        email,
+                        phone,
+                        password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Store token and user data
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    alert('Account created successfully! Welcome to ParkEase.');
+                    window.location.href = 'profile.html';
+                } else {
+                    alert('Error: ' + data.message);
+                    button.textContent = 'Create Account';
+                    button.style.opacity = '1';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error creating account. Please try again.');
+                button.textContent = 'Create Account';
+                button.style.opacity = '1';
+            }
+        });
+    </script>
+</body>
+</html>

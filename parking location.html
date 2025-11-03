@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParkEase - Smart Parking solutions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #000000 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Animated Background Particles */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.8) 0%, rgba(0, 200, 255, 0) 70%);
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+            opacity: 0.6;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            25% { transform: translate(50px, -50px) scale(1.2); opacity: 0.6; }
+            50% { transform: translate(-30px, 30px) scale(0.9); opacity: 0.4; }
+            75% { transform: translate(40px, 20px) scale(1.1); opacity: 0.5; }
+        }
+
+        .glow-effect {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .glow-1 {
+            background: #00ffff;
+            top: -200px;
+            left: -200px;
+            animation: glow-pulse 8s infinite ease-in-out;
+        }
+
+        .glow-2 {
+            background: #0080ff;
+            bottom: -200px;
+            right: -200px;
+            animation: glow-pulse 10s infinite ease-in-out reverse;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { opacity: 0.15; transform: scale(1); }
+            50% { opacity: 0.25; transform: scale(1.1); }
+        }
+
+        /* Header */
+        header {
+            position: relative;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: rgba(10, 14, 39, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #00ffff 0%, #0080ff 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #000;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            animation: logo-glow 3s infinite ease-in-out;
+        }
+
+        @keyframes logo-glow {
+            0%, 100% { box-shadow: 0 0 30px rgba(0, 255, 255, 0.5); }
+            50% { box-shadow: 0 0 50px rgba(0, 255, 255, 0.8), 0 0 80px rgba(0, 255, 255, 0.4); }
+        }
+
+        .company-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ffff 0%, #0080ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00ffff, #0080ff);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #00ffff 0%, #0080ff 100%);
+            color: #000;
+            padding: 0.75rem 1.8rem;
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.6), 0 5px 20px rgba(0, 255, 255, 0.3);
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #ff4466 0%, #ff6b8a 100%);
+            color: #fff;
+            padding: 0.75rem 1.8rem;
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 0 30px rgba(255, 68, 102, 0.4);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 50px rgba(255, 68, 102, 0.6);
+        }
+
+        /* Search Section */
+        .search-section {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 4rem 5% 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .search-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #00ffff 0%, #ffffff 50%, #0080ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .search-subtitle {
+            font-size: 1.1rem;
+            color: #a0d8ff;
+            margin-bottom: 2.5rem;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 300px;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 50px;
+            color: #ffffff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #00ffff;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .search-input::placeholder {
+            color: #6b9bb8;
+        }
+
+        .search-button {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #00ffff 0%, #0080ff 100%);
+            color: #000;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.6);
+        }
+
+        /* Quick Search Options */
+        .quick-search {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .quick-search-btn {
+            padding: 0.6rem 1.5rem;
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 25px;
+            color: #00ffff;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .quick-search-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .quick-search-label {
+            color: #a0d8ff;
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+
+        /* Parking Grid */
+        .parking-grid {
+            position: relative;
+            z-index: 10;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 2rem;
+            padding: 2rem 5% 4rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .parking-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 0;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+
+        .parking-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(0, 255, 255, 0.5);
+            box-shadow: 0 20px 60px rgba(0, 255, 255, 0.2);
+        }
+
+        .parking-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .parking-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00ffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .parking-location {
+            font-size: 0.9rem;
+            color: #a0d8ff;
+        }
+
+        .map-container {
+            width: 100%;
+            height: 300px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .parking-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 1.5rem 2rem;
+            gap: 1rem;
+        }
+
+        .stat {
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-value.available {
+            color: #00ff88;
+            text-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+        }
+
+        .stat-value.occupied {
+            color: #ff4466;
+            text-shadow: 0 0 15px rgba(255, 68, 102, 0.5);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #a0d8ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .booking-section {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .booking-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(135deg, #00ffff 0%, #0080ff 100%);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .booking-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .parking-grid {
+                grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+
+            .parking-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .search-container {
+                flex-direction: column;
+            }
+
+            .search-input {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Effects -->
+    <div class="glow-effect glow-1"></div>
+    <div class="glow-effect glow-2"></div>
+    
+    <div id="particles"></div>
+
+    <!-- Header -->
+   <header>
+        <div class="logo-section">
+            <div class="logo">P</div>
+            <div class="company-name">ParkEase</div>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="parking location.html">Parking Locations</a>
+            <a href="profile.html">Profile</a>
+            <a href="login.html" class="cta-button" id="loginBtn">Log In / Register</a>
+            <button class="cta-button logout-btn" id="logoutBtn" onclick="logout()" style="display: none;">Logout</button>
+        </nav>
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-section">
+        <h1 class="search-title">Find Your Perfect Parking Spot</h1>
+        <p class="search-subtitle">Enter your destination to discover available parking options with live updates</p>
+        
+        <div class="search-container">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search for parking locations in Belagavi...">
+            <button class="search-button" onclick="searchParking()">
+                🔍 Search
+            </button>
+        </div>
+
+        <div class="quick-search-label">Quick Search:</div>
+        <div class="quick-search">
+            <button class="quick-search-btn" onclick="quickSearch('college')">🎓 College Parking</button>
+            <button class="quick-search-btn" onclick="quickSearch('dmart')">🛒 DMart</button>
+            <button class="quick-search-btn" onclick="quickSearch('nucleus')">🏬 Nucleus Mall</button>
+            <button class="quick-search-btn" onclick="quickSearch('inox')">🎬 INOX</button>
+        </div>
+    </section>
+
+    <!-- Parking Grid -->
+    <section class="parking-grid" id="parkingGrid">
+        <!-- SGBIT College Parking -->
+        <div class="parking-card" data-location="college">
+            <div class="parking-header">
+                <div class="parking-name">College Parking</div>
+                <div class="parking-location">📍College, Belagavi</div>
+            </div>
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3837.7891891234!2d74.52639!3d15.8577!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbf66f45e0a8b4b%3A0x5f5e2c0b8f8e8f8e!2sShri%20Guru%20Basaveshwar%20Institute%20of%20Technology!5e0!3m2!1sen!2sin!4v1234567890" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+            <div class="parking-stats">
+                <div class="stat">
+                    <div class="stat-value available">28</div>
+                    <div class="stat-label">Available</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value occupied">12</div>
+                    <div class="stat-label">Occupied</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DMart -->
+        <div class="parking-card" data-location="dmart">
+            <div class="parking-header">
+                <div class="parking-name">DMart Tilakwadi</div>
+                <div class="parking-location">📍 DMart, Tilakwadi, Belagavi</div>
+            </div>
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3838.4567891234!2d74.5089!3d15.8387!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbf66e7f8f8f8f8%3A0x8f8f8f8f8f8f8f8f!2sDMart%20Tilakwadi%20Belagavi!5e0!3m2!1sen!2sin!4v1234567890" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+            <div class="parking-stats">
+                <div class="stat">
+                    <div class="stat-value available">14</div>
+                    <div class="stat-label">Available</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value occupied">11</div>
+                    <div class="stat-label">Occupied</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nucleus Mall -->
+        <div class="parking-card" data-location="nucleus">
+            <div class="parking-header">
+                <div class="parking-name">Nucleus Mall</div>
+                <div class="parking-location">📍 Nucleus Mall, Belagavi</div>
+            </div>
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3838.2891891234!2d74.5167!3d15.8456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbf668b8b8b8b8b%3A0x1f1f1f1f1f1f1f1f!2sNucleus%20Mall%20Belagavi!5e0!3m2!1sen!2sin!4v1234567890" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+            <div class="parking-stats">
+                <div class="stat">
+                    <div class="stat-value available">13</div>
+                    <div class="stat-label">Available</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value occupied">7</div>
+                    <div class="stat-label">Occupied</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INOX -->
+        <div class="parking-card" data-location="inox">
+            <div class="parking-header">
+                <div class="parking-name">INOX Cinema</div>
+                <div class="parking-location">📍 INOX, Belagavi Central Mall</div>
+            </div>
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3838.3891891234!2d74.5089!3d15.8423!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbf66a2a2a2a2a2%3A0x3f3f3f3f3f3f3f3f!2sINOX%20Belagavi!5e0!3m2!1sen!2sin!4v1234567890" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+            <div class="parking-stats">
+                <div class="stat">
+                    <div class="stat-value available">19</div>
+                    <div class="stat-label">Available</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value occupied">6</div>
+                    <div class="stat-label">Occupied</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // API Base URL - automatically detects the correct URL
+        const API_BASE_URL = window.location.origin;
+        
+        // Check if user is logged in and update UI
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        if (token && user) {
+            // User is logged in
+            if (loginBtn) loginBtn.style.display = 'none';
+            if (logoutBtn) logoutBtn.style.display = 'block';
+        } else {
+            // User is not logged in
+            if (loginBtn) loginBtn.style.display = 'block';
+            if (logoutBtn) logoutBtn.style.display = 'none';
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+        
+        // Create floating particles
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 50;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            const size = Math.random() * 4 + 2;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = (Math.random() * 15 + 15) + 's';
+            
+            particlesContainer.appendChild(particle);
+        }
+
+        // Load parking locations from database
+        async function loadParkingLocations() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/locations`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateParkingCards(data.locations);
+                }
+            } catch (error) {
+                console.error('Error loading parking locations:', error);
+            }
+        }
+
+        // Update parking cards with database data
+        function updateParkingCards(locations) {
+            const parkingGrid = document.getElementById('parkingGrid');
+            parkingGrid.innerHTML = '';
+
+            locations.forEach(location => {
+                const card = document.createElement('div');
+                card.className = 'parking-card';
+                card.setAttribute('data-location', location.name.toLowerCase().replace(/\s+/g, ''));
+                
+                card.innerHTML = `
+                    <div class="parking-header">
+                        <div class="parking-name">${location.name}</div>
+                        <div class="parking-location">📍 ${location.address}</div>
+                    </div>
+                    <div class="map-container">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3837.7891891234!2d${location.longitude}!3d${location.latitude}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbf66f45e0a8b4b%3A0x5f5e2c0b8f8e8f8e!2s${encodeURIComponent(location.name)}!5e0!3m2!1sen!2sin!4v1234567890" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                    <div class="parking-stats">
+                        <div class="stat">
+                            <div class="stat-value available">${location.available_slots}</div>
+                            <div class="stat-label">Available</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value occupied">${location.total_slots - location.available_slots}</div>
+                            <div class="stat-label">Occupied</div>
+                        </div>
+                    </div>
+                    <div class="booking-section">
+                        <button class="booking-btn">Book Parking</button>
+                    </div>
+                `;
+                
+                // Add event listener to booking button
+                const bookingButton = card.querySelector('.booking-btn');
+                bookingButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const locationParam = location.name.toLowerCase().replace(/\s+/g, '');
+                    window.location.href = `booking.html?location=${locationParam}`;
+                });
+                
+                parkingGrid.appendChild(card);
+            });
+        }
+
+        // Load locations when page loads
+        document.addEventListener('DOMContentLoaded', loadParkingLocations);
+
+        // Search functionality
+        function searchParking() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.parking-card');
+            
+            cards.forEach(card => {
+                const name = card.querySelector('.parking-name').textContent.toLowerCase();
+                const location = card.querySelector('.parking-location').textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || location.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeIn 0.5s ease';
+                } else if (searchTerm === '') {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Quick search functionality
+        function quickSearch(location) {
+            const cards = document.querySelectorAll('.parking-card');
+            
+            cards.forEach(card => {
+                const dataLocation = card.getAttribute('data-location');
+                
+                if (dataLocation === location) {
+                    card.style.display = 'block';
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    // Highlight effect
+                    card.style.transform = 'scale(1.02)';
+                    card.style.borderColor = '#00ffff';
+                    setTimeout(() => {
+                        card.style.transform = '';
+                        card.style.borderColor = '';
+                    }, 1000);
+                } else {
+                    card.style.display = 'block';
+                }
+            });
+            
+            // Update search input
+            const searchInput = document.getElementById('searchInput');
+            const locationNames = {
+                'college': 'SGBIT College',
+                'dmart': 'DMart',
+                'nucleus': 'Nucleus Mall',
+                'inox': 'INOX'
+            };
+            searchInput.value = locationNames[location];
+        }
+
+        // Search on Enter key
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchParking();
+            }
+        });
+
+        // Add fade in animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParkEase - Book Parking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #000000 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Animated Background Particles */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.8) 0%, rgba(0, 200, 255, 0) 70%);
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+            opacity: 0.6;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            25% { transform: translate(50px, -50px) scale(1.2); opacity: 0.6; }
+            50% { transform: translate(-30px, 30px) scale(0.9); opacity: 0.4; }
+            75% { transform: translate(40px, 20px) scale(1.1); opacity: 0.5; }
+        }
+
+        .glow-effect {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .glow-1 {
+            background: #00ffff;
+            top: -200px;
+            left: -200px;
+            animation: glow-pulse 8s infinite ease-in-out;
+        }
+
+        .glow-2 {
+            background: #0080ff;
+            bottom: -200px;
+            right: -200px;
+            animation: glow-pulse 10s infinite ease-in-out reverse;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { opacity: 0.15; transform: scale(1); }
+            50% { opacity: 0.25; transform: scale(1.1); }
+        }
+
+        /* Header */
+        header {
+            position: relative;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: rgba(10, 14, 39, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #00ffff 0%, #0080ff 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #000;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            animation: logo-glow 3s infinite ease-in-out;
+        }
+
+        @keyframes logo-glow {
+            0%, 100% { box-shadow: 0 0 30px rgba(0, 255, 255, 0.5); }
+            50% { box-shadow: 0 0 50px rgba(0, 255, 255, 0.8), 0 0 80px rgba(0, 255, 255, 0.4); }
+        }
+
+        .company-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ffff 0%, #0080ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00ffff, #0080ff);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #00ffff 0%, #0080ff 100%);
+            color: #000;
+            padding: 0.75rem 1.8rem;
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.6), 0 5px 20px rgba(0, 255, 255, 0.3);
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #ff4466 0%, #ff6b8a 100%);
+            color: #fff;
+            padding: 0.75rem 1.8rem;
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 0 30px rgba(255, 68, 102, 0.4);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 50px rgba(255, 68, 102, 0.6);
+        }
+
+        /* Booking Container */
+        .booking-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            padding: 3rem 5%;
+        }
+
+        .booking-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 30px;
+            padding: 3rem 3rem 2.5rem;
+            backdrop-filter: blur(20px);
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 255, 255, 0.1);
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .booking-box:hover {
+            border-color: rgba(0, 255, 255, 0.5);
+            box-shadow: 0 20px 80px rgba(0, 255, 255, 0.2);
+        }
+
+        .booking-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #00ffff 0%, #ffffff 50%, #0080ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .booking-subtitle {
+            text-align: center;
+            color: #a0d8ff;
+            margin-bottom: 2.5rem;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            color: #00ffff;
+            margin-bottom: 0.6rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .form-label .required {
+            color: #ff4466;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 1rem 1.3rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            border-radius: 15px;
+            color: #ffffff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: #00ffff;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-input::placeholder {
+            color: #6b9bb8;
+        }
+
+        .form-select {
+            cursor: pointer;
+        }
+
+        .form-select option {
+            background: #0a0e27;
+            color: #ffffff;
+        }
+
+        /* Location Display */
+        .location-display {
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 1rem 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .location-icon {
+            font-size: 1.5rem;
+        }
+
+        .location-text {
+            flex: 1;
+        }
+
+        .location-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #00ffff;
+            margin-bottom: 0.2rem;
+        }
+
+        .location-address {
+            font-size: 0.85rem;
+            color: #a0d8ff;
+        }
+
+        /* Price Summary */
+        .price-summary {
+            background: rgba(0, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            color: #a0d8ff;
+        }
+
+        .price-row:last-child {
+            margin-bottom: 0;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .price-row.total {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #00ffff;
+        }
+
+        .price-value {
+            font-weight: 600;
+        }
+
+        .booking-button {
+            width: 100%;
+            padding: 1.1rem;
+            background: linear-gradient(135deg, #00ffff 0%, #0080ff 100%);
+            color: #000;
+            border: none;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        .booking-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.6);
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .back-link a {
+            color: #00ffff;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link a:hover {
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        /* Payment Processing Modal */
+        .payment-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .payment-content {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 100%);
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 255, 255, 0.3);
+            animation: modalSlideIn 0.5s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: scale(0.8) translateY(-50px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .payment-processing {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .processing-spinner {
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(0, 255, 255, 0.2);
+            border-top: 4px solid #00ffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .processing-text {
+            font-size: 1.2rem;
+            color: #00ffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .processing-subtext {
+            font-size: 0.9rem;
+            color: #a0d8ff;
+        }
+
+        .processing-steps {
+            width: 100%;
+            margin-top: 2rem;
+        }
+
+        .processing-step {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            background: rgba(0, 255, 255, 0.05);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .processing-step.active {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .processing-step.completed {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .step-icon {
+            font-size: 1.2rem;
+            margin-right: 1rem;
+        }
+
+        .step-text {
+            flex: 1;
+            text-align: left;
+            color: #a0d8ff;
+        }
+
+        .step-text.active {
+            color: #00ffff;
+        }
+
+        .step-text.completed {
+            color: #00ff88;
+        }
+
+        /* Confirmation Modal */
+        .confirmation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+            backdrop-filter: blur(10px);
+        }
+
+        .confirmation-content {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 100%);
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 255, 255, 0.3);
+            animation: modalSlideIn 0.5s ease;
+        }
+
+        .confirmation-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .confirmation-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #00ffff;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .confirmation-details {
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+
+        .confirmation-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .confirmation-row:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            color: #00ffff;
+            font-size: 1.1rem;
+        }
+
+        .confirmation-label {
+            color: #a0d8ff;
+        }
+
+        .confirmation-value {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .confirmation-actions {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .confirmation-btn {
+            background: linear-gradient(135deg, #00ffff 0%, #0080ff 100%);
+            color: #000;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .confirmation-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.6);
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            color: #000;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 50px rgba(0, 255, 136, 0.6);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+
+            .booking-box {
+                padding: 2.5rem 2rem;
+            }
+
+            .booking-title {
+                font-size: 2rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .confirmation-content {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .confirmation-title {
+                font-size: 1.5rem;
+            }
+
+            .payment-content {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .confirmation-actions {
+                flex-direction: column;
+            }
+
+            .confirmation-btn, .download-btn {
+                width: 100%;
+                margin: 0.5rem 0;
+            }
+
+            .processing-steps {
+                font-size: 0.9rem;
+            }
+
+            .processing-step {
+                padding: 0.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Effects -->
+    <div class="glow-effect glow-1"></div>
+    <div class="glow-effect glow-2"></div>
+    
+    <div id="particles"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo-section">
+            <div class="logo">P</div>
+            <div class="company-name">ParkEase</div>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="parking location.html">Parking Locations</a>
+            <a href="profile.html">Profile</a>
+            <a href="login.html" class="cta-button" id="loginBtn">Log In / Register</a>
+            <button class="cta-button logout-btn" id="logoutBtn" onclick="logout()" style="display: none;">Logout</button>
+        </nav>
+    </header>
+
+    <!-- Booking Container -->
+    <div class="booking-container">
+        <div class="booking-box">
+            <h1 class="booking-title">Book Your Parking</h1>
+            <p class="booking-subtitle">Reserve your parking spot in advance</p>
+            
+            <!-- Location Display -->
+            <div class="location-display">
+                <div class="location-icon">📍</div>
+                <div class="location-text">
+                    <div class="location-name" id="locationName">College Parking</div>
+                    <div class="location-address" id="locationAddress">College, Belagavi</div>
+                </div>
+            </div>
+
+            <form id="bookingForm">
+                <!-- Date and Time -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Booking Date <span class="required">*</span></label>
+                        <input type="date" class="form-input" id="bookingDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Duration (Hours) <span class="required">*</span></label>
+                        <select class="form-select" id="duration" required onchange="calculatePrice()">
+                            <option value="">Select duration</option>
+                            <option value="1">1 Hour - ₹50</option>
+                            <option value="2">2 Hours - ₹90</option>
+                            <option value="3">3 Hours - ₹120</option>
+                            <option value="4">4 Hours - ₹150</option>
+                            <option value="5">5 Hours - ₹180</option>
+                            <option value="6">6 Hours - ₹200</option>
+                            <option value="full">Full Day - ₹300</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Time Slot -->
+                <div class="form-group">
+                    <label class="form-label">Start Time <span class="required">*</span></label>
+                    <input type="time" class="form-input" id="startTime" required>
+                </div>
+
+                <!-- Vehicle Details -->
+                <div class="form-group">
+                    <label class="form-label">Vehicle Number <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="vehicleNumber" placeholder="e.g., KA-32 AB 1234" required pattern="[A-Z]{2}-[0-9]{2}\s[A-Z]{2}\s[0-9]{4}">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Phone Number <span class="required">*</span></label>
+                        <input type="tel" class="form-input" id="phoneNumber" placeholder="+91 98765 43210" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Payment Mode <span class="required">*</span></label>
+                        <select class="form-select" id="paymentMode" required>
+                            <option value="">Select payment mode</option>
+                            <option value="card">Card</option>
+                            <option value="upi">UPI</option>
+                            <option value="netbanking">Net Banking</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Price Summary -->
+                <div class="price-summary">
+                    <div class="price-row">
+                        <span>Base Price</span>
+                        <span class="price-value" id="basePrice">₹0</span>
+                    </div>
+                    <div class="price-row">
+                        <span>Service Charge</span>
+                        <span class="price-value">₹10</span>
+                    </div>
+                    <div class="price-row total">
+                        <span>Total Amount</span>
+                        <span class="price-value" id="totalPrice">₹10</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="booking-button">Confirm Booking</button>
+            </form>
+
+            <div class="back-link">
+                <a href="#" onclick="history.back()">← Back to Parking Locations</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Processing Modal -->
+    <div class="payment-modal" id="paymentModal">
+        <div class="payment-content">
+            <div class="payment-processing">
+                <div class="processing-spinner"></div>
+                <div class="processing-text" id="processingText">Processing Payment...</div>
+                <div class="processing-subtext">Please wait while we process your payment</div>
+                
+                <div class="processing-steps">
+                    <div class="processing-step active" id="step1">
+                        <div class="step-icon">🔐</div>
+                        <div class="step-text active">Validating payment details</div>
+                    </div>
+                    <div class="processing-step" id="step2">
+                        <div class="step-icon">💳</div>
+                        <div class="step-text">Processing payment</div>
+                    </div>
+                    <div class="processing-step" id="step3">
+                        <div class="step-icon">✉️</div>
+                        <div class="step-text">Confirming booking</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="confirmation-modal" id="confirmationModal">
+        <div class="confirmation-content">
+            <div class="confirmation-icon">🎉</div>
+            <h2 class="confirmation-title">Booking Confirmed!</h2>
+            <div class="confirmation-details" id="confirmationDetails">
+                <!-- Booking details will be populated here -->
+            </div>
+            <div class="confirmation-actions">
+                <button class="confirmation-btn" onclick="redirectToProfile()">View My Bookings</button>
+                <a class="download-btn" id="downloadBtn" download="booking_confirmation.txt">📥 Download</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Base URL - automatically detects the correct URL
+        const API_BASE_URL = window.location.origin;
+        
+        // Check if user is logged in and update UI
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        if (token && user) {
+            // User is logged in
+            if (loginBtn) loginBtn.style.display = 'none';
+            if (logoutBtn) logoutBtn.style.display = 'block';
+        } else {
+            // User is not logged in
+            if (loginBtn) loginBtn.style.display = 'block';
+            if (logoutBtn) logoutBtn.style.display = 'none';
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+        
+        // Define functions first so they're available globally
+        function calculateEndTime() {
+            const startTime = document.getElementById('startTime').value;
+            const duration = document.getElementById('duration').value;
+            
+            if (startTime && duration) {
+                const [hours, minutes] = startTime.split(':');
+                const startDate = new Date();
+                startDate.setHours(parseInt(hours), parseInt(minutes));
+                
+                let durationHours = duration === 'full' ? 24 : parseInt(duration);
+                startDate.setHours(startDate.getHours() + durationHours);
+                
+                const endHours = String(startDate.getHours()).padStart(2, '0');
+                const endMinutes = String(startDate.getMinutes()).padStart(2, '0');
+                return `${endHours}:${endMinutes}`;
+            }
+            return '';
+        }
+
+        function calculatePrice() {
+            console.log('calculatePrice called');
+            const duration = document.getElementById('duration').value;
+            console.log('Selected duration:', duration);
+            
+            const priceMap = {
+                '1': 50,
+                '2': 90,
+                '3': 120,
+                '4': 150,
+                '5': 180,
+                '6': 200,
+                'full': 300
+            };
+            
+            const basePrice = priceMap[duration] || 0;
+            const serviceCharge = 10;
+            const total = basePrice + serviceCharge;
+            
+            console.log('Calculated prices:', { basePrice, serviceCharge, total });
+            
+            // Update price display
+            const basePriceElement = document.getElementById('basePrice');
+            const totalPriceElement = document.getElementById('totalPrice');
+            
+            console.log('Price elements found:', { basePriceElement, totalPriceElement });
+            
+            if (basePriceElement && totalPriceElement) {
+                basePriceElement.textContent = '₹' + basePrice;
+                totalPriceElement.textContent = '₹' + total;
+                
+                console.log('Price updated successfully:', { basePrice: '₹' + basePrice, total: '₹' + total });
+            } else {
+                console.error('Price elements not found in DOM');
+            }
+            
+            // Update booking button to show price
+            const bookingButton = document.querySelector('.booking-button');
+            if (bookingButton) {
+                if (duration) {
+                    bookingButton.textContent = `Confirm Booking - ₹${total}`;
+                } else {
+                    bookingButton.textContent = 'Confirm Booking';
+                }
+                console.log('Button text updated:', bookingButton.textContent);
+            }
+            
+            calculateEndTime();
+        }
+
+        // Create floating particles
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 50;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            const size = Math.random() * 4 + 2;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = (Math.random() * 15 + 15) + 's';
+            
+            particlesContainer.appendChild(particle);
+        }
+
+        // Get location from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedLocation = urlParams.get('location');
+        
+        // Location data
+        const locations = {
+            'college': {
+                name: 'College Parking',
+                address: 'College, Belagavi'
+            },
+            'dmart': {
+                name: 'DMart Tilakwadi',
+                address: 'DMart, Tilakwadi, Belagavi'
+            },
+            'nucleus': {
+                name: 'Nucleus Mall',
+                address: 'Nucleus Mall, Belagavi'
+            },
+            'inox': {
+                name: 'INOX Cinema',
+                address: 'INOX, Belagavi Central Mall'
+            }
+        };
+
+        // Set location if provided
+        if (selectedLocation && locations[selectedLocation]) {
+            document.getElementById('locationName').textContent = locations[selectedLocation].name;
+            document.getElementById('locationAddress').textContent = locations[selectedLocation].address;
+        }
+
+        // Set today's date as default
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('bookingDate').value = today;
+        document.getElementById('bookingDate').min = today;
+
+        // Form submission
+        document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Check if user is logged in
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user'));
+            
+            if (!token || !user) {
+                alert('Please login to make a booking');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Validate form fields
+            const requiredFields = ['bookingDate', 'duration', 'startTime', 'vehicleNumber', 'phoneNumber', 'paymentMode'];
+            const missingFields = [];
+            
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    missingFields.push(fieldId);
+                }
+            });
+            
+            if (missingFields.length > 0) {
+                alert('Please fill in all required fields before submitting.');
+                return;
+            }
+            
+            const bookingData = {
+                user_id: user.id,
+                location_id: getLocationId(),
+                booking_date: document.getElementById('bookingDate').value,
+                start_time: document.getElementById('startTime').value,
+                end_time: calculateEndTime(),
+                duration: document.getElementById('duration').value,
+                vehicle_number: document.getElementById('vehicleNumber').value,
+                phone_number: document.getElementById('phoneNumber').value,
+                payment_mode: document.getElementById('paymentMode').value,
+                total_price: document.getElementById('totalPrice').textContent
+            };
+            
+            // Show payment processing modal
+            showPaymentProcessing();
+            
+            // Simulate payment processing steps
+            setTimeout(() => updateProcessingStep(1), 1000);
+            setTimeout(() => updateProcessingStep(2), 2000);
+            setTimeout(() => updateProcessingStep(3), 3000);
+            
+            // After processing simulation, submit the booking
+            setTimeout(async () => {
+                const button = this.querySelector('.booking-button');
+                const originalText = button.textContent;
+                button.textContent = 'Processing...';
+                button.style.opacity = '0.7';
+                
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/bookings/create`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(bookingData)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    // Hide payment processing modal
+                    document.getElementById('paymentModal').style.display = 'none';
+                    
+                    if (data.success) {
+                        // Store booking data for download
+                        window.currentBookingData = { ...bookingData, booking_id: data.booking_id };
+                        
+                        // Show custom confirmation modal
+                        showConfirmationModal(data.booking_id, bookingData);
+                    } else {
+                        alert('Error: ' + data.message);
+                        button.textContent = originalText;
+                        button.style.opacity = '1';
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    document.getElementById('paymentModal').style.display = 'none';
+                    alert('❌ Error creating booking. Please check your internet connection and try again.\n\nIf the problem persists, please contact support.');
+                    button.textContent = originalText;
+                    button.style.opacity = '1';
+                }
+            }, 4000);
+        });
+        
+        // Helper function to get location ID based on current location
+        function getLocationId() {
+            const locationName = document.getElementById('locationName').textContent;
+            const locationMap = {
+                'College Parking': 1,
+                'DMart Tilakwadi': 2,
+                'Nucleus Mall': 3,
+                'INOX Cinema': 4
+            };
+            return locationMap[locationName] || 1;
+        }
+
+        // Show payment processing modal
+        function showPaymentProcessing() {
+            const modal = document.getElementById('paymentModal');
+            modal.style.display = 'flex';
+            
+            // Reset all steps
+            for (let i = 1; i <= 3; i++) {
+                const step = document.getElementById(`step${i}`);
+                const stepText = step.querySelector('.step-text');
+                step.className = 'processing-step';
+                stepText.className = 'step-text';
+            }
+        }
+
+        // Update processing step
+        function updateProcessingStep(stepNumber) {
+            // Mark previous steps as completed
+            for (let i = 1; i < stepNumber; i++) {
+                const step = document.getElementById(`step${i}`);
+                const stepText = step.querySelector('.step-text');
+                step.className = 'processing-step completed';
+                stepText.className = 'step-text completed';
+                stepText.textContent = stepText.textContent.replace('...', ' ✓');
+            }
+            
+            // Mark current step as active
+            const currentStep = document.getElementById(`step${stepNumber}`);
+            const currentStepText = currentStep.querySelector('.step-text');
+            currentStep.className = 'processing-step active';
+            currentStepText.className = 'step-text active';
+            
+            // Update processing text
+            const messages = {
+                1: 'Validating payment details...',
+                2: 'Processing payment securely...',
+                3: 'Confirming your booking...'
+            };
+            document.getElementById('processingText').textContent = messages[stepNumber];
+            
+            // Mark final step as completed when done
+            if (stepNumber === 3) {
+                setTimeout(() => {
+                    currentStep.className = 'processing-step completed';
+                    currentStepText.className = 'step-text completed';
+                    currentStepText.textContent = currentStepText.textContent.replace('...', ' ✓');
+                }, 500);
+            }
+        }
+
+        // Show confirmation modal
+        function showConfirmationModal(bookingId, bookingData) {
+            const modal = document.getElementById('confirmationModal');
+            const detailsContainer = document.getElementById('confirmationDetails');
+            
+            // Populate booking details
+            detailsContainer.innerHTML = `
+                <div class="confirmation-row">
+                    <span class="confirmation-label">Booking ID:</span>
+                    <span class="confirmation-value">#PK2025-${bookingId}</span>
+                </div>
+                <div class="confirmation-row">
+                    <span class="confirmation-label">Location:</span>
+                    <span class="confirmation-value">${document.getElementById('locationName').textContent}</span>
+                </div>
+                <div class="confirmation-row">
+                    <span class="confirmation-label">Date:</span>
+                    <span class="confirmation-value">${bookingData.booking_date}</span>
+                </div>
+                <div class="confirmation-row">
+                    <span class="confirmation-label">Time:</span>
+                    <span class="confirmation-value">${bookingData.start_time} - ${bookingData.end_time}</span>
+                </div>
+                <div class="confirmation-row">
+                    <span class="confirmation-label">Vehicle:</span>
+                    <span class="confirmation-value">${bookingData.vehicle_number}</span>
+                </div>
+                <div class="confirmation-row">
+                    <span class="confirmation-label">Duration:</span>
+                    <span class="confirmation-value">${bookingData.duration} ${bookingData.duration === 'full' ? 'Day' : 'Hours'}</span>
+                </div>
+                <div class="confirmation-row">
+                    <span class="confirmation-label">Payment Mode:</span>
+                    <span class="confirmation-value">${bookingData.payment_mode}</span>
+                </div>
+                <div class="confirmation-row">
+                    <span class="confirmation-label">Total Amount:</span>
+                    <span class="confirmation-value">${bookingData.total_price}</span>
+                </div>
+            `;
+            
+            // Set up download button
+            const downloadBtn = document.getElementById('downloadBtn');
+            const confirmationText = `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        PARK EASE - BOOKING CONFIRMATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Booking ID: #PK2025-${bookingId}
+
+Location: ${document.getElementById('locationName').textContent}
+Address: ${document.getElementById('locationAddress').textContent}
+
+Booking Date: ${bookingData.booking_date}
+Time Slot: ${bookingData.start_time} - ${bookingData.end_time}
+Duration: ${bookingData.duration} ${bookingData.duration === 'full' ? 'Day' : 'Hours'}
+
+Vehicle Details:
+  • Number: ${bookingData.vehicle_number}
+  • Phone: ${bookingData.phone_number}
+
+Payment Information:
+  • Mode: ${bookingData.payment_mode}
+  • Total Amount: ${bookingData.total_price}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Thank you for choosing ParkEase!
+Have a safe journey.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Generated on: ${new Date().toLocaleString()}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            `;
+            
+            const blob = new Blob([confirmationText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            downloadBtn.href = url;
+            downloadBtn.download = `booking_confirmation_${bookingId}.txt`;
+            
+            // Show modal
+            modal.style.display = 'flex';
+            
+            // Reset button state - let it get updated by calculatePrice if needed
+            const duration = document.getElementById('duration').value;
+            const button = document.querySelector('.booking-button');
+            if (duration) {
+                const priceMap = {
+                    '1': 50,
+                    '2': 90,
+                    '3': 120,
+                    '4': 150,
+                    '5': 180,
+                    '6': 200,
+                    'full': 300
+                };
+                const basePrice = priceMap[duration] || 0;
+                const total = basePrice + 10;
+                button.textContent = `Confirm Booking - ₹${total}`;
+            } else {
+                button.textContent = 'Confirm Booking';
+            }
+            button.style.opacity = '1';
+        }
+
+        // Redirect to profile page
+        function redirectToProfile() {
+            window.location.href = 'profile.html';
+        }
+    </script>
+</body>
+</html>
