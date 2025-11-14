@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ParkEase - Smart Parking solutions</title>
+    <link rel="stylesheet" href="css/wallet.css">
     <style>
         * {
             margin: 0;
@@ -413,6 +414,9 @@
             <a href="index.html">Home</a>
             <a href="parking location.html">Parking Locations</a>
             <a href="profile.html">Profile</a>
+            <a href="wallet.html" class="wallet-link" id="walletLink" style="display: none;">
+                <span class="wallet-balance" id="walletBalance">₹0.00</span>
+            </a>
             <a href="login.html" class="cta-button login-btn" id="loginBtn">Log In / Register</a>
             <button class="cta-button logout-btn" id="logoutBtn" onclick="logout()" style="display: none;">Logout</button>
         </nav>
@@ -455,15 +459,34 @@
         const user = localStorage.getItem('user');
         const loginBtn = document.getElementById('loginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
+        const walletLink = document.getElementById('walletLink');
 
         if (token && user) {
             // User is logged in
             loginBtn.style.display = 'none';
             logoutBtn.style.display = 'block';
+            walletLink.style.display = 'inline-block';
+            loadWalletBalance();
         } else {
             // User is not logged in
             loginBtn.style.display = 'block';
             logoutBtn.style.display = 'none';
+            walletLink.style.display = 'none';
+        }
+
+        // Function to load wallet balance
+        function loadWalletBalance() {
+            const userData = JSON.parse(localStorage.getItem('user'));
+            if (!userData) return;
+
+            fetch(`/api/wallet/${userData.id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('walletBalance').textContent = `₹${data.balance.toFixed(2)}`;
+                    }
+                })
+                .catch(error => console.error('Error loading wallet balance:', error));
         }
 
         // Logout function

@@ -57,6 +57,17 @@ router.post('/register', async (req, res) => {
                         { expiresIn: '24h' }
                     );
 
+                    // Create wallet for new user
+                    db.run(
+                        'INSERT INTO wallets (user_id) VALUES (?)',
+                        [this.lastID],
+                        (err) => {
+                            if (err) {
+                                console.error('Error creating wallet:', err.message);
+                            }
+                        }
+                    );
+
                     res.status(201).json({
                         success: true,
                         message: 'User registered successfully',

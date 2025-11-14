@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ParkEase - Book Parking</title>
+    <link rel="stylesheet" href="css/wallet.css">
     <style>
         * {
             margin: 0;
@@ -704,6 +705,9 @@
             <a href="index.html">Home</a>
             <a href="parking location.html">Parking Locations</a>
             <a href="profile.html">Profile</a>
+            <a href="wallet.html" class="wallet-link" id="walletLink" style="display: none;">
+                <span class="wallet-balance" id="walletBalance">₹0.00</span>
+            </a>
             <a href="login.html" class="cta-button" id="loginBtn">Log In / Register</a>
             <button class="cta-button logout-btn" id="logoutBtn" onclick="logout()" style="display: none;">Logout</button>
         </nav>
@@ -755,7 +759,7 @@
                 <!-- Vehicle Details -->
                 <div class="form-group">
                     <label class="form-label">Vehicle Number <span class="required">*</span></label>
-                    <input type="text" class="form-input" id="vehicleNumber" placeholder="e.g., KA-32 AB 1234" required pattern="[A-Z]{2}-[0-9]{2}\s[A-Z]{2}\s[0-9]{4}">
+                    <input type="text" class="form-input" id="vehicleNumber" placeholder="e.g., KA32AB1234" required>
                 </div>
 
                 <div class="form-row">
@@ -767,6 +771,7 @@
                         <label class="form-label">Payment Mode <span class="required">*</span></label>
                         <select class="form-select" id="paymentMode" required>
                             <option value="">Select payment mode</option>
+                            <option value="wallet">E-Wallet</option>
                             <option value="card">Card</option>
                             <option value="upi">UPI</option>
                             <option value="netbanking">Net Banking</option>
@@ -849,15 +854,65 @@
         const user = localStorage.getItem('user');
         const loginBtn = document.getElementById('loginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
+        const walletLink = document.getElementById('walletLink');
 
         if (token && user) {
             // User is logged in
             if (loginBtn) loginBtn.style.display = 'none';
             if (logoutBtn) logoutBtn.style.display = 'block';
+            if (walletLink) {
+                walletLink.style.display = 'inline-block';
+                loadWalletBalance();
+            }
         } else {
             // User is not logged in
             if (loginBtn) loginBtn.style.display = 'block';
             if (logoutBtn) logoutBtn.style.display = 'none';
+            if (walletLink) walletLink.style.display = 'none';
+        }
+
+        // Function to load wallet balance
+        function loadWalletBalance() {
+            const userData = JSON.parse(localStorage.getItem('user'));
+            if (!userData) return;
+
+            fetch(`/api/wallet/${userData.id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('walletBalance').textContent = `₹${data.balance.toFixed(2)}`;
+                    }
+                })
+                .catch(error => console.error('Error loading wallet balance:', error));
+        }
+
+        // Function to process wallet payment
+        async function processWalletPayment(amount) {
+            const userData = JSON.parse(localStorage.getItem('user'));
+            if (!userData) return false;
+
+            try {
+                const response = await fetch(`/api/wallet/withdraw/${userData.id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ amount: parseFloat(amount) })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    loadWalletBalance(); // Refresh wallet balance
+                    return true;
+                } else {
+                    alert(data.message || 'Insufficient wallet balance');
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error processing wallet payment:', error);
+                alert('Error processing wallet payment');
+                return false;
+            }
         }
 
         // Logout function
@@ -1037,6 +1092,16 @@
             // Show payment processing modal
             showPaymentProcessing();
             
+            // Handle wallet payment if selected
+            if (bookingData.payment_mode === 'wallet') {
+                const amount = parseFloat(document.getElementById('totalPrice').textContent.replace('₹', ''));
+                const paymentSuccess = await processWalletPayment(amount);
+                if (!paymentSuccess) {
+                    document.getElementById('paymentModal').style.display = 'none';
+                    return;
+                }
+            }
+
             // Simulate payment processing steps
             setTimeout(() => updateProcessingStep(1), 1000);
             setTimeout(() => updateProcessingStep(2), 2000);

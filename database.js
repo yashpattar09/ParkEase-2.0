@@ -79,6 +79,23 @@ function initializeTables() {
             console.log('Bookings table created/verified');
         }
     });
+
+    // Wallet table
+    db.run(`
+        CREATE TABLE IF NOT EXISTS wallets (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            balance DECIMAL(10,2) DEFAULT 100.00,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users (id)
+        )
+    `, (err) => {
+        if (err) {
+            console.error('Error creating wallets table:', err.message);
+        } else {
+            console.log('Wallets table created/verified');
+        }
+    });
 }
 
 // Initialize parking locations with sample data
